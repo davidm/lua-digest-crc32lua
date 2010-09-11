@@ -1,0 +1,6 @@
+COPYRIGHT
+MANIFEST
+digest.crc32lua-0.1.0-1.rockspec
+dist.info
+util.mk
+module/lmod/digest/crc32lua.lua

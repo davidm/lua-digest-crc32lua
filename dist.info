@@ -1,0 +1,15 @@
+type = [[all]]
+arch = [[Universal]]
+short = [['digest.crc32lua' CRC-32 checksum implemented in pure Lua]]
+author = [[David Manura]]
+full = [[Note: use a C binding instead for higher performance.]]
+maintainer = [[David Manura <http://lua-users.org/wiki/DavidManura>]]
+version = [[0.1]]
+homepage = [[http://lua-users.org/wiki/ModuleDigestCRC32Lua]]
+license = [[MIT]]
+name = [[digest.crc32lua]]
+dependencies = {
+	['lua'] = [[>=5.1]],
+	['bit.numberlua'] = [[>=0.1]],
+}
+
