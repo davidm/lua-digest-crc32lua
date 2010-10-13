@@ -23,6 +23,11 @@ local _G = _G
 
 local bxor = require "bit.numberlua" . bxor
 
+--[[NATIVE_BITOPS
+local bxor = bit.bxor
+local rshift = bit.rshift
+local bnot = bit.bnot
+--]]
 
 -- CRC-32-IEEE 802.3 (V.42)
 local POLY = 0xEDB88320
@@ -57,6 +62,14 @@ local function crc32_byte(byte, crc)
   local v2 = crc_table[bxor(crc % 256, byte)]
   return 0xffffffff - bxor(v1, v2)
 end
+--[[NATIVE_BITOPS
+local function crc32_byte(byte, crc)
+  crc = bnot(crc or 0)
+  local v1 = rshift(crc, 8)
+  local v2 = crc_table[bxor(crc % 256, byte)]
+  return bnot(bxor(v1, v2))
+end
+--]]
 M.crc32_byte = crc32_byte
 
 
