@@ -18,7 +18,7 @@ build = {
   type = "none",
   install = {
      lua = {
-        ["digest.crc32lua"] = "module/lmod/digest/crc32lua.lua",
+        ["digest.crc32lua"] = "lmod/digest/crc32lua.lua",
      }
   }
 }

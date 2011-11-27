@@ -1,7 +1,7 @@
 -- tests of digest.crc32lua
 
-package.path = '../lua-bit-numberlua/module/lmod/?.lua;' .. package.path
-package.path = 'module/lmod/?.lua;' .. package.path
+package.path = '../lua-bit-numberlua/lmod/?.lua;' .. package.path
+package.path = 'lmod/?.lua;' .. package.path
 local CRC = require 'digest.crc32lua'
 
 local function checkeq(a, b)
