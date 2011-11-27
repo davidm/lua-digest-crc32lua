@@ -1,5 +1,7 @@
 COPYRIGHT
+CHANGES.txt
 MANIFEST
+README.txt
 digest.crc32lua-0.1.0-1.rockspec
 dist.info
 util.mk

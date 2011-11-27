@@ -1,7 +1,7 @@
 package = "digest.crc32lua"
-version = "0.1.0-1"
+version = "$(_VERSION)"
 source = {
-   url = "http://math2.org/download/lua-digest-crc32lua-0.1.tar.gz",
+   url = "http://math2.org/download/lua-digest-crc32lua-FIX.tar.gz",
 }
 description = {
    summary    = "'digest.crc32lua' CRC-32 checksum implemented in pure Lua",
