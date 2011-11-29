@@ -1,34 +1,37 @@
 --[[
-digest.crc32
-CRC-32 checksum implemented entirely in Lua.  This is similar to [1-2].
+ digest.crc32
+ CRC-32 checksum implemented entirely in Lua.  This is similar to [1-2].
 
-Dependencies:
-  BitOp "bit", Lua 5.2 "bit32", or "bit.numberlua" (>=000.003).
+ Dependencies:
+   BitOp "bit", Lua 5.2 "bit32", or "bit.numberlua" (>=000.003).
 
-References
-  [1] http://www.axlradius.com/freestuff/CRC32.java
-  [2] http://www.gamedev.net/reference/articles/article1941.asp
-  [3] http://java.sun.com/j2se/1.5.0/docs/api/java/util/zip/CRC32.html
-  [4] http://www.dsource.org/projects/tango/docs/current/tango.io.digest.Crc32.html
-  [5] http://pydoc.org/1.5.2/zlib.html#-crc32
-  [6] http://www.python.org/doc/2.5.2/lib/module-binascii.html
-
-(c) 2008-2011 David Manura.  Licensed under the same terms as Lua (MIT).
+ References
+   [1] http://www.axlradius.com/freestuff/CRC32.java
+   [2] http://www.gamedev.net/reference/articles/article1941.asp
+   [3] http://java.sun.com/j2se/1.5.0/docs/api/java/util/zip/CRC32.html
+   [4] http://www.dsource.org/projects/tango/docs/current/tango.io.digest.Crc32.html
+   [5] http://pydoc.org/1.5.2/zlib.html#-crc32
+   [6] http://www.python.org/doc/2.5.2/lib/module-binascii.html
+ 
+ (c) 2008-2011 David Manura.  Licensed under the same terms as Lua (MIT).
 --]]
 
 
-local M = {_TYPE='module', _NAME='digest.crc32', _VERSION='000.003.2011-11-26'}
+local M = {_TYPE='module', _NAME='digest.crc32', _VERSION='000.003.2011-11-28'}
 
 local type = type
 local require = require
 local setmetatable = setmetatable
-local _G = _G
 
--- Requires the the first module listed that exists, else raises.
--- Second return value is module name loaded.
-local function multirequire(...)
+--[[
+ Requires the first module listed that exists, else raises like `require`.
+ If a non-string is encountered, it is returned.
+ Second return value is module name loaded (or '').
+ --]]
+local function requireany(...)
   local errs = {}
   for _,name in ipairs{...} do
+    if type(name) ~= 'string' then return name, '' end
     local ok, mod = pcall(require, name)
     if ok then return mod, name end
     errs[#errs+1] = mod
@@ -36,7 +39,7 @@ local function multirequire(...)
   error(table.concat(errs, '\n'), 2)
 end
 
-local bit, name = multirequire('bit', 'bit32', 'bit.numberlua')
+local bit, name_ = requireany('bit', 'bit32', 'bit.numberlua')
 local bxor = bit.bxor
 local bnot = bit.bnot
 local band = bit.band
@@ -44,9 +47,6 @@ local rshift = bit.rshift
 
 -- CRC-32-IEEE 802.3 (V.42)
 local POLY = 0xEDB88320
-
--- Prefer native ops on LuaJIT.
-local FULL = (_G.jit ~= 0)
 
 local function memoize(f)
   local mt = {}
@@ -58,7 +58,7 @@ local function memoize(f)
   return t
 end
 
-local crc_table = memoize(FULL and function(i)
+local crc_table = memoize(function(i)
   local crc = i
   for _=1,8 do
     local b = band(crc, 1)
@@ -66,50 +66,39 @@ local crc_table = memoize(FULL and function(i)
     if b == 1 then crc = bxor(crc, POLY) end
   end
   return crc
-end or function(i)
-  local crc = i
-  for _=1,8 do
-    local b = crc % 2
-    crc = (crc - b) / 2
-    if b == 1 then crc = bxor(crc, POLY) end
-  end
-  return crc
 end)
 
-local crc32_byte = FULL and function(byte, crc)
+
+function M.crc32_byte(byte, crc)
   crc = bnot(crc or 0)
   local v1 = rshift(crc, 8)
   local v2 = crc_table[bxor(crc % 256, byte)]
   return bnot(bxor(v1, v2))
-end or function(byte, crc)
-  crc = 0xffffffff - (crc or 0)
-  local v1 = (crc - crc % 256) / 256
-  local v2 = crc_table[bxor(crc % 256, byte)]
-  return 0xffffffff - bxor(v1, v2)
 end
-M.crc32_byte = crc32_byte
+local M_crc32_byte = M.crc32_byte
 
 
-local function crc32_string(s, crc)
+function M.crc32_string(s, crc)
   crc = crc or 0
   for i=1,#s do
-    crc = crc32_byte(s:byte(i), crc)
+    crc = M_crc32_byte(s:byte(i), crc)
   end
   return crc
 end
-M.crc32_string = crc32_string
+local M_crc32_string = M.crc32_string
 
 
-local function crc32(s, crc)
+function M.crc32(s, crc)
   if type(s) == 'string' then
-    return crc32_string(s, crc)
+    return M_crc32_string(s, crc)
   else
-    return crc32_byte(s, crc)
+    return M_crc32_byte(s, crc)
   end
 end
-M.crc32 = crc32
 
-M.bit = bit
+
+M.bit = bit  -- bit library used
+
 
 return M
 
