@@ -1,0 +1,33 @@
+package = "lua-digest-crc32lua"
+version = "$(_VERSION)"
+source = {
+   --url = "https://github.com/davidm/lua-digest-crc32lua/zipball/v$(_VERSION)",
+   url = "git://github.com/davidm/lua-digest-crc32lua.git",
+   branch='$(_VERSION)'
+}
+description = {
+   summary    = "'digest.crc32lua' CRC-32 checksum implemented in pure Lua",
+   detailed   = [[
+      Note: use a C binding instead for higher performance.
+   ]],
+   license    =  "MIT/X11",
+   homepage   = "https://github.com/davidm/lua-digest-crc32lua",
+   maintainer = "David Manura <http://lua-users.org/wiki/DavidManura>",
+}
+dependencies = {
+  "lua >= 5.1",  -- including 5.2
+  -- one of these bitwise operator libraries:
+  "lua-bit-numberlua >= 0.3",  -- fallback
+  --"LuaBitOp",  -- included in LuaJIT
+  --"Lua >= 5.2", -- included 'bit32'
+  --"bit32", -- included in Lua 5.2
+}
+build = {
+  type = "none",
+  install = {
+     lua = {
+        ["digest.crc32lua"] = "lmod/digest/crc32lua.lua",
+     }
+  }
+}
+-- _VERSION from lmod/digest/crc32lua.lua

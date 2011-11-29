@@ -2,7 +2,9 @@ COPYRIGHT
 CHANGES.txt
 MANIFEST
 README.txt
-digest.crc32lua-0.1.0-1.rockspec
+rockspec.in
 dist.info
+test.lua
+test_performance.lua
 util.mk
 lmod/digest/crc32lua.lua

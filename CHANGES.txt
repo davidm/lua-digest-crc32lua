@@ -1,5 +1,5 @@
-2011-11-26
+0.3.20111128
   Can now use BitOp 'bit', Lua 5.2 'bit32', or 'bit.numberlua' library.
   Updated bit.numberlua library to 000.003.
 
-2008 - initial version
+0.1.2008 - initial version
